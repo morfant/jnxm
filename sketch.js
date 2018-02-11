@@ -9,31 +9,34 @@ function setup() {
   // createCanvas(320, 180);
   createCanvas(800, 600);
 
+  // video
+  vid = createVideo("data/test.mp4");
+  vid.size(800, 600); 
+  vid.hide();
+
   // text input
   greeting = createElement('h2', '넥슨컴퓨터박물관에 오신 것을 환영합니다. </br> 이름을 입력하세요.');
   greeting.position(20, 5);
 
   input = createInput();
   input.position(20, 165);
+  input.attribute('maxlength', '4');
+  input.class("textField"); // see data/style.css
 
-  button = createButton('submit');
-  button.position(input.x + input.width, 165);
-  button.mousePressed(greet); // function to run when click submit
-
+  // submit button
+  // button = createButton('submit');
+  // button.position(input.x + input.width, 165);
+  // button.mousePressed(greet); // function to run when click submit
 
   textAlign(CENTER);
   textSize(50);
-
-  // video
-  vid = createVideo("data/test.mp4");
-  vid.size(800, 500); 
-  vid.hide();
 }
 
 function draw() {
   background(50, 50);
   // imageMode(CENTER);
-  image(vid, 0, 200); // set video position
+  image(vid, 0, 0); // set video position
+  var t = selectAll('.textField');
 }
 
 function greet() {
@@ -67,5 +70,9 @@ function keyPressed() {
   if (key === 'f' || key === 'F') {
     var fs = fullscreen();
     fullscreen(!fs);
+  }
+  else if (keyCode === ENTER) {
+    console.log(select('.textField').elt.value);
+
   }
 }
