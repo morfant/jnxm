@@ -72,7 +72,35 @@ function keyPressed() {
     fullscreen(!fs);
   }
   else if (keyCode === ENTER) {
+	console.log("enter!");
     console.log(select('.textField').elt.value);
+    korToUnicode();
 
   }
+}
+
+function replaceAll(strTemp, strValue1, strValue2){ 
+	console.log(strTemp);
+  while(1){
+    if( strTemp.indexOf(strValue1) != -1 )
+      strTemp = strTemp.replace(strValue1, strValue2);
+    else
+      break;
+  }
+  return strTemp;
+}
+
+function unicodeToKor(){
+  //유니코드 -> 한글
+  var str=document.getElementById("a").value;
+  document.getElementById("b").value=unescape(replaceAll(str, "\\", "%"));
+}
+
+function korToUnicode(){
+  //한글 -> 유니코드
+  var str = select('.textField').elt.value;
+  var rslt = escape(replaceAll(str, "\\", "%"));
+  console.log(rslt);
+
+//  document.getElementById("bb").value=escape(replaceAll(str, "\\", "%"));
 }
