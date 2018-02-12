@@ -3,7 +3,7 @@ var vid;
 var playing = false;
 var completion;
 var input, button, greeting;
-var fullScr = true;
+var textLength = 0;
 
 function setup() {
   // createCanvas(320, 180);
@@ -72,6 +72,8 @@ function keyPressed() {
     fullscreen(!fs);
   }
   else if (keyCode === ENTER) {
+    textLength = select('.textField').elt.value.length;
+    console.log(textLength);
     console.log(select('.textField').elt.value);
 
   }
