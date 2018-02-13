@@ -6,22 +6,25 @@ var input, button, greeting;
 var textLength = 0;
 var binName = "";
 var binText;
+var inputPosX = 450;
+var inputPosY = 500;
 
 function setup() {
-  // createCanvas(320, 180);
-  createCanvas(800, 600);
+  var cnv = createCanvas(windowWidth, windowHeight);
+  cnv.style('display', 'block');
 
   // video
-  vid = createVideo("data/test.mp4");
-  vid.size(800, 600); 
-  vid.hide();
+  // vid = createVideo("data/test.mp4");
+  // vid.size(800, 600); 
+  // vid.hide();
 
   // text input
-  greeting = createElement('h2', '넥슨컴퓨터박물관에 오신 것을 환영합니다. </br> 이름을 입력하세요.');
-  greeting.position(20, 5);
+  greeting = createElement('h2', '넥슨컴퓨터박물관에 오신 것을 환영합니다. </br> </br> 이름을 입력하세요.');
+  greeting.position(300, 80);
+  greeting.class("greeting-text");
 
   input = createInput();
-  input.position(20, 165);
+  input.position(inputPosX, inputPosY);
   input.attribute('maxlength', '4');
   input.class("textField"); // see data/style.css
 
@@ -34,15 +37,15 @@ function setup() {
   textSize(50);
 
   binText = createElement('h2');
-  binText.position(20, 200);
+  binText.position(inputPosX, inputPosY + 200);
   binText.id("binText");
 
 }
 
 function draw() {
-  background(50, 50);
+  background(89, 89, 89);
   // imageMode(CENTER);
-  image(vid, 0, 0); // set video position
+  // image(vid, 0, 0); // set video position
   var t = selectAll('.textField');
 
   // console.log(binName);
@@ -152,3 +155,6 @@ function text2Binary(string) {
 //   return tstr;
 // }
 
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}

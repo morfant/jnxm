@@ -1,8 +1,41 @@
+html, body {
+    height: 100%;
+ }
+  
+body {
+    margin: 0;
+    display: flex;
+
+    /* This centers our sketch horizontally. */
+    justify-content: center;
+
+    /* This centers our sketch vertically. */
+    align-items: center;
+}
+
+
+.greeting-text {
+
+    text-align: center;
+    font-size: 35pt;
+    color: #FFFFFF;
+    line-height: 150%;
+}
+
+
 .textField{
-    font-size: 18pt;
+    font-size: 28pt;
     padding: 10px;
     border: none;
     border-bottom: 2px solid white;
-    background-color: #60988E;
+    background-color: #595959;
     color: #FFFFFF;
+    text-align: center;
 }
+
+#binText {
+    font-size: 28pt;
+    color: #FFFFFF;
+    /* text-align: center; */
+}
+
