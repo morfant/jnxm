@@ -13,7 +13,9 @@ var greeting_posY = 200;
 var enterInput = false;
 var textVelY = 20;
 var cnt = 0;
-var fontWidth = 25;
+var charIdx = 0;
+var fontWidth = 30;
+var charXPoses;
 
 function setup() {
  
@@ -56,6 +58,7 @@ function draw() {
     if (greeting_posY < -150) {
       textVelY = 0;
 
+      // trigger recursive function
       if (!binPrinting) {
         binPrinting = true;
         printBins();
@@ -71,9 +74,11 @@ function draw() {
 
   if (binPrinting) {
     for (var i = 0; i < cnt; i++) {
-      var posX = (width - (fontWidth * binNum)) / 2;
-      // console.log(posX);
+      var posX = (width - (fontWidth * binNum)) / 2; // console.log(posX);
       text(binName[i], posX + i * fontWidth, 600);
+
+      stroke(255);
+      if (i == cnt - 1) line(charXPoses[charIdx], 150, posX + i * fontWidth, 550)
     }
   }
 
@@ -85,6 +90,7 @@ function draw() {
 
 function printBins() {
   cnt++;
+  if (binName[cnt] == ' ') charIdx++;
   if (cnt < binNum) setTimeout(printBins, binPrintInterval);
 }
 
@@ -99,6 +105,26 @@ function keyTyped() {
     analyzeText(str);
     binNum = binNum + (charLength - 1); // add num of space
     console.log("binNum: " + binNum);
+
+    charXPoses = [];
+    // charXPoses
+    if (charLength == 1) {
+      charXPoses[0] = width/2;
+    } else if (charLength == 2) {
+      charXPoses[0] = width/2 - (fontWidth);
+      charXPoses[1] = width/2 + (fontWidth);
+    } else if (charLength == 3) {
+      charXPoses[0] = width/2 - (fontWidth + fontWidth/2);
+      charXPoses[1] = width/2;
+      charXPoses[2] = width/2 + (fontWidth + fontWidth/2);
+    } else if (charLength == 4) {
+      charXPoses[0] = width/2 - (fontWidth * 2);
+      charXPoses[1] = width/2 - (fontWidth * 1);
+      charXPoses[2] = width/2 + (fontWidth * 1);
+      charXPoses[3] = width/2 + (fontWidth * 2);
+    }
+
+
 
     binName = text2Binary(str);
     console.log("binName: " + binName);
