@@ -24,7 +24,8 @@ body {
 .greeting-text {
     text-align: center;
     font-size: 35pt;
-    color: #FFFFFF;
+    /* color: #FFFFFF; */
+    color: #76F74D; 
     line-height: 150%;
 }
 
@@ -33,20 +34,26 @@ body {
     position: absolute;
 
     width: 30%;
-    background-color: #595959;
-    color: #FFFFFF;
+    /* background-color: #595959; */
+    background-color: #151515;
+
+    color: #76F74D;
+    /* color: #FFFFFF; */
     text-align: center;
     font-size: 35pt;
 
     padding: 1px;
     border: none;
-    border-bottom: 2px solid white;
+    border-bottom: 2px solid #76F74D;
 }
 
 #binText {
     position: absolute;
-    background-color: #595959;
-    color: #FFFFFF;
+    /* background-color: #595959; */
+    background-color: #151515;
+
+    color: #76F74D;
+    /* color: #FFFFFF; */
     text-align: center;
     font-size: 28pt;
     padding: 10px;

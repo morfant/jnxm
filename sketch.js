@@ -36,10 +36,13 @@ function setup() {
 }
 
 function draw() {
-  background(89, 89, 89);
+  // background(89, 89, 89);
+  background(21, 21, 21);
 
   // greeting text
-  fill(250);
+  // fill(250);
+  noStroke();
+  fill(113, 246, 79);
   textAlign(CENTER);
   textSize(50);
 
@@ -77,7 +80,7 @@ function draw() {
       var posX = (width - (fontWidth * binNum)) / 2; // console.log(posX);
       text(binName[i], posX + i * fontWidth, 600);
 
-      stroke(255);
+      stroke(113, 246, 79, 100);
       if (i == cnt - 1) line(charXPoses[charIdx], 150, posX + i * fontWidth, 550)
     }
   }
@@ -142,8 +145,6 @@ function analyzeText(string) {
     binNum += b;
   });
 }
-
-
 
 function text2Binary(string) {
   return string.split('').map(function (char) {
