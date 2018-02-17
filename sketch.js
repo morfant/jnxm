@@ -3,18 +3,17 @@ var input, button, greeting;
 var charLength = 0;
 var binNum = 0;
 var binName = "";
-var binNamePrinted = false;
 var binPrinting = false;
+var binPrintInterval = 100; //ms
 var binText;
 var inputPosX = 450;
 var inputPosY = 500;
-var prevEvent = 0;
 var greet = "넥슨컴퓨터박물관에 오신 것을 환영합니다.\n\n이름을 입력하세요."
 var greeting_posY = 200;
 var enterInput = false;
 var textVelY = 20;
-var isPrinting = false;
 var cnt = 0;
+var fontWidth = 25;
 
 function setup() {
  
@@ -57,25 +56,10 @@ function draw() {
     if (greeting_posY < -150) {
       textVelY = 0;
 
-      if (!binNamePrinted) {
+      if (!binPrinting) {
         binPrinting = true;
         printBins();
-        binNamePrinted = true;
       }
-
-      // var i = 0;
-      // while(!binNamePrinted) {
-      //   if (millis() - prevEvent > 1000) {
-      //     console.log(i);
-      //     console.log(binName[i]);
-      //     text(binName[i], 100 + i * 30, 600);
-      //     i++;
-      //     if (i == binNum - 1) {
-      //       binNamePrinted = true;
-      //     }
-      //     prevEvent = millis();
-      //   }
-
 
     }
   }
@@ -87,7 +71,9 @@ function draw() {
 
   if (binPrinting) {
     for (var i = 0; i < cnt; i++) {
-      text(binName[i], 100 + i * 30, 600);
+      var posX = (width - (fontWidth * binNum)) / 2;
+      // console.log(posX);
+      text(binName[i], posX + i * fontWidth, 600);
     }
   }
 
@@ -99,17 +85,9 @@ function draw() {
 
 function printBins() {
   cnt++;
-  if (cnt < binNum - 1) setTimeout(printBins, 100);
+  if (cnt < binNum) setTimeout(printBins, binPrintInterval);
 }
 
-
-function setDelay(i) {
-  setTimeout(function() {
-    console.log("i: " + i);
-    text(binName[i], 100 + i * 30, 600);
-  }, 1000)
-}
-  
 function keyTyped() {
 
   if (keyCode === ENTER) {
@@ -119,10 +97,12 @@ function keyTyped() {
     charLength = str.length;
 
     analyzeText(str);
+    binNum = binNum + (charLength - 1); // add num of space
     console.log("binNum: " + binNum);
 
     binName = text2Binary(str);
     console.log("binName: " + binName);
+    // console.log(binName[binNum-1]);
 
   } else if (keyCode === 32) {
     console.log("sp");
