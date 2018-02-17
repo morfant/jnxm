@@ -34,8 +34,8 @@ body {
     position: absolute;
 
     width: 30%;
-    /* background-color: #595959; */
-    background-color: #151515;
+    background-color: #595959;
+    /* background-color: #151515; */
 
     color: #76F74D;
     /* color: #FFFFFF; */
@@ -44,18 +44,28 @@ body {
 
     padding: 1px;
     border: none;
-    border-bottom: 2px solid #76F74D;
+    /* border-bottom: 2px solid #76F74D; */
+    border-bottom: 2px solid white;
 }
 
 #binText {
     position: absolute;
-    /* background-color: #595959; */
-    background-color: #151515;
+    background-color: #595959;
+    /* background-color: #151515; */
 
     color: #76F74D;
     /* color: #FFFFFF; */
     text-align: center;
     font-size: 28pt;
     padding: 10px;
+}
+
+#barcode {
+    position: absolute;
+    /* width: 100%; */
+    margin-top: auto;
+    margin-left: auto;
+    margin-right: auto;
+
 }
 

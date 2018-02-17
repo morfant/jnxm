@@ -4,6 +4,7 @@ var charLength = 0;
 var binNum = 0;
 var binName = "";
 var binPrinting = false;
+var numbersPrinted = false;
 var binPrintInterval = 100; //ms
 var binText;
 var inputPosX = 450;
@@ -16,6 +17,8 @@ var cnt = 0;
 var charIdx = 0;
 var fontWidth = 30;
 var charXPoses;
+var firstCharBin;
+var first = true;
 
 function setup() {
  
@@ -36,13 +39,13 @@ function setup() {
 }
 
 function draw() {
-  // background(89, 89, 89);
-  background(21, 21, 21);
+  background(89, 89, 89);
+  // background(21, 21, 21);
 
   // greeting text
-  // fill(250);
+  fill(250);
   noStroke();
-  fill(113, 246, 79);
+  // fill(113, 246, 79);
   textAlign(CENTER);
   textSize(50);
 
@@ -81,7 +84,29 @@ function draw() {
       text(binName[i], posX + i * fontWidth, 600);
 
       stroke(113, 246, 79, 100);
-      if (i == cnt - 1) line(charXPoses[charIdx], 150, posX + i * fontWidth, 550)
+      if (!numbersPrinted) {
+        if (i == cnt - 1) line(charXPoses[charIdx], 150, posX + i * fontWidth, 550)
+      }
+    }
+
+    if (numbersPrinted) {
+      console.log("draw barcode");
+      var img = createElement('img');
+      img.id("barcode");
+      var posX = (width - (30 * binNum)) / 2;
+      img.position(posX, 630);
+
+      JsBarcode("#barcode", binName, {
+        format: "CODE128",
+        background: "#595959",
+        lineColor: "white",
+        width:4,
+        height:100,
+        displayValue: false,
+        fontSize: 36
+      });
+
+      numbersPrinted = false;
     }
   }
 
@@ -94,7 +119,13 @@ function draw() {
 function printBins() {
   cnt++;
   if (binName[cnt] == ' ') charIdx++;
-  if (cnt < binNum) setTimeout(printBins, binPrintInterval);
+
+  if (cnt < binNum) {
+    setTimeout(printBins, binPrintInterval);
+  } else {
+    numbersPrinted = true;
+    console.log("numbersPrinted: " + numbersPrinted);
+  }
 }
 
 function keyTyped() {
@@ -131,6 +162,7 @@ function keyTyped() {
 
     binName = text2Binary(str);
     console.log("binName: " + binName);
+    console.log("firstCharBin: " + firstCharBin);
     // console.log(binName[binNum-1]);
 
   } else if (keyCode === 32) {
@@ -148,6 +180,10 @@ function analyzeText(string) {
 
 function text2Binary(string) {
   return string.split('').map(function (char) {
+    if (first){
+      firstCharBin = char.charCodeAt(0).toString(2);
+      first = false;
+    }
       return char.charCodeAt(0).toString(2);
   }).join(' ');
 }
