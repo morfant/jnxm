@@ -4,6 +4,7 @@ var charLength = 0;
 var binNum = 0;
 var binName = "";
 var binNamePrinted = false;
+var binPrinting = false;
 var binText;
 var inputPosX = 450;
 var inputPosY = 500;
@@ -12,6 +13,8 @@ var greet = "넥슨컴퓨터박물관에 오신 것을 환영합니다.\n\n이�
 var greeting_posY = 200;
 var enterInput = false;
 var textVelY = 20;
+var isPrinting = false;
+var cnt = 0;
 
 function setup() {
  
@@ -55,12 +58,24 @@ function draw() {
       textVelY = 0;
 
       if (!binNamePrinted) {
-        for (var i = 0; i < binNum; i++) {
-          console.log(binName[i]);
-          text(binName[i], 100 + i * 10, 600);
-        }
+        binPrinting = true;
+        printBins();
         binNamePrinted = true;
       }
+
+      // var i = 0;
+      // while(!binNamePrinted) {
+      //   if (millis() - prevEvent > 1000) {
+      //     console.log(i);
+      //     console.log(binName[i]);
+      //     text(binName[i], 100 + i * 30, 600);
+      //     i++;
+      //     if (i == binNum - 1) {
+      //       binNamePrinted = true;
+      //     }
+      //     prevEvent = millis();
+      //   }
+
 
     }
   }
@@ -70,11 +85,31 @@ function draw() {
   text(greet, 0, 0);
   pop();
 
+  if (binPrinting) {
+    for (var i = 0; i < cnt; i++) {
+      text(binName[i], 100 + i * 30, 600);
+    }
+  }
+
+
   // console.log(binName);
   // binText.html(binName);
-
+  // console.log("draw()");
 }
 
+function printBins() {
+  cnt++;
+  if (cnt < binNum - 1) setTimeout(printBins, 100);
+}
+
+
+function setDelay(i) {
+  setTimeout(function() {
+    console.log("i: " + i);
+    text(binName[i], 100 + i * 30, 600);
+  }, 1000)
+}
+  
 function keyTyped() {
 
   if (keyCode === ENTER) {
