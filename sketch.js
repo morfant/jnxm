@@ -49,6 +49,12 @@ function draw() {
   textAlign(CENTER);
   textSize(50);
 
+  // greeting text 
+  push();
+  translate(width/2, greeting_posY);
+  text(greet, 0, 0);
+  pop();
+
   if (enterInput) {
     var name = input.value();
     input.remove();
@@ -73,16 +79,12 @@ function draw() {
     }
   }
 
-  push();
-  translate(width/2, greeting_posY);
-  text(greet, 0, 0);
-  pop();
-
   if (binPrinting) {
     for (var i = 0; i < cnt; i++) {
       var posX = (width - (fontWidth * binNum)) / 2; // console.log(posX);
       text(binName[i], posX + i * fontWidth, 600);
 
+      // bin number pointing line
       stroke(113, 246, 79, 100);
       if (!numbersPrinted) {
         if (i == cnt - 1) line(charXPoses[charIdx], 150, posX + i * fontWidth, 550)
@@ -165,20 +167,25 @@ function draw() {
 
 function reset() {
 
-  // Text Input 
-  input = createInput();
-  input.attribute('maxlength', '4');
-  input.class("text-field"); // see data/style.css
+  // recreate Text Input 
+  // console.log(select('.text-field'));
+  if (select('.text-field') == null) {
+    input = createInput();
+    input.attribute('maxlength', '4');
+    input.class("text-field"); // see data/style.css
+  }
 
   enterInput = false;
   binPrinting = false;
   numbersPrinted = false;
-
+  greeting_posY = 200;
+  textVelY = 20;
 
 }
 
 
 function printBins() {
+  console.log("printBins()");
   cnt++;
   if (binName[cnt] == ' ') charIdx++;
 
@@ -193,10 +200,15 @@ function printBins() {
 function keyTyped() {
 
   if (keyCode === ENTER) {
+    console.log("enter input!");
     enterInput = true;
 
+    // reset variables
     binNum = 0;
     binName = null;
+    cnt = 0;
+    charIdx = 0;
+
 
     var str = input.value();
     charLength = str.length;
@@ -232,9 +244,11 @@ function keyTyped() {
 
   } else if (keyCode === 32) {
     console.log("sp");
-  } else if (keyCode === CONTROL) { // delete key
+  } else if (keyCode === BACKSPACE) {
     console.log("reset()");
     reset();
+  } else {
+    // console.log(keyCode);
   }
 
 }
