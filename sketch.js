@@ -32,9 +32,9 @@ function setup() {
   input.class("text-field"); // see data/style.css
 
   // Binary result text
-  binText = createElement('h2');
-  binText.position(inputPosX, inputPosY + 200);
-  binText.id("binText");
+  // binText = createElement('h2');
+  // binText.position(inputPosX, inputPosY + 200);
+  // binText.id("binText");
 
 }
 
@@ -89,25 +89,71 @@ function draw() {
       }
     }
 
+    for (var i = 0; i < cnt; i++) {
+      // console.log(binName[i]);
+      if (binName[i] == '0'){
+        // rect
+        noStroke();
+        fill(0);
+        rect(posX + (i-0.5) * (fontWidth), 620, 30, 30);
+
+        // pulse
+        stroke(255, 200);
+        line(posX + (i-0.5) * (fontWidth), 700, posX + (i+0.5) * (fontWidth), 700);
+        if (binName[i-1] == '1') {
+          line(posX + (i-0.5) * (fontWidth), 700, posX + (i-0.5) * (fontWidth), 670);
+        }
+
+        // punch hole
+        // noStroke();
+        ellipse(posX + i * fontWidth, 730, 20, 20);
+      } else if (binName[i] == '1'){
+
+        // rect
+        noStroke();
+        fill(255);
+        rect(posX + (i-0.5) * (fontWidth), 620, 30, 30);
+
+        // pulse
+        stroke(255, 200);
+        line(posX + (i-0.5) * (fontWidth), 670, posX + (i+0.5) * (fontWidth), 670);
+        if (binName[i-1] == '0') {
+          line(posX + (i-0.5) * (fontWidth), 670, posX + (i-0.5) * (fontWidth), 700);
+        }
+
+        // punch hole
+        // noStroke();
+        // ellipse(posX + i * fontWidth, 730, 20, 20);
+
+      } else if (binName[i] == ' ') {
+        // console.log("except: " + binName[i]);
+      }
+    }
+
+    // draw barcode
+    /*
     if (numbersPrinted) {
       console.log("draw barcode");
       var img = createElement('img');
       img.id("barcode");
       var posX = (width - (30 * binNum)) / 2;
-      img.position(posX, 630);
+      img.position(posX, 760);
+      // img.position(0, 760);
 
       JsBarcode("#barcode", binName, {
         format: "CODE128",
         background: "#595959",
         lineColor: "white",
-        width:4,
-        height:100,
+        width:3,
+        height:50,
         displayValue: false,
         fontSize: 36
       });
 
       numbersPrinted = false;
     }
+    */
+
   }
 
 
@@ -116,6 +162,22 @@ function draw() {
   // console.log("draw()");
 }
 
+
+function reset() {
+
+  // Text Input 
+  input = createInput();
+  input.attribute('maxlength', '4');
+  input.class("text-field"); // see data/style.css
+
+  enterInput = false;
+  binPrinting = false;
+  numbersPrinted = false;
+
+
+}
+
+
 function printBins() {
   cnt++;
   if (binName[cnt] == ' ') charIdx++;
@@ -123,7 +185,7 @@ function printBins() {
   if (cnt < binNum) {
     setTimeout(printBins, binPrintInterval);
   } else {
-    numbersPrinted = true;
+    numbersPrinted = true; // it's going to print barcode image
     console.log("numbersPrinted: " + numbersPrinted);
   }
 }
@@ -132,6 +194,9 @@ function keyTyped() {
 
   if (keyCode === ENTER) {
     enterInput = true;
+
+    binNum = 0;
+    binName = null;
 
     var str = input.value();
     charLength = str.length;
@@ -167,6 +232,9 @@ function keyTyped() {
 
   } else if (keyCode === 32) {
     console.log("sp");
+  } else if (keyCode === CONTROL) { // delete key
+    console.log("reset()");
+    reset();
   }
 
 }
