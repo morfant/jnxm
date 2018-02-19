@@ -258,6 +258,7 @@ function keyTyped() {
     binName = null;
     cnt = 0;
     charIdx = 0;
+    first = true;
 
 
     var str = input.value();

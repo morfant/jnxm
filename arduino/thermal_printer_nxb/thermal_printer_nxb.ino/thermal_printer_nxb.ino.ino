@@ -37,9 +37,8 @@ const int ledPin = 13; // the pin that the LED is attached to
 int incomingByte; // a variable to read incoming serial data into
 char msg_date[11];
 char msg_binName[17];
-
 char buf[27]; // 10 + 16 (date, firstCharBin)
-int cnt = 0;
+
 boolean newFeed = false;
 
 void setup() {
@@ -158,14 +157,14 @@ void loop() {
     } else {
       if (newFeed == true) {
 
-        strncpy(msg_date, buf, 10);
+        strncpy(msg_date, buf, 10); // 2018/02/19 : date
         msg_date[strlen(msg_date)] = '\0';
-        strncpy(msg_binName, buf + 10, 16);
-        msg_binName[strlen(msg_binName)] = '\0';
+        strncpy(msg_binName, buf + 10, 16); // 1100011101110100 : bin of first char
+        msg_binName[strlen(msg_binName)] = '\0'; // make last char as a NULL
 
         printer.justify('C');
-        printer.setSize('M');        // Set type size, accepts 'S', 'M', 'L'
-        //        //        printer.println(F("NEXON COMPUTER MUSEUM"));
+        printer.setSize('M');
+        printer.println(F("NEXON COMPUTER MUSEUM"));
         printer.println(msg_date);
         //        printer.println(msg_binName);
         
