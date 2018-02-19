@@ -19,6 +19,8 @@ var fontWidth = 30;
 var charXPoses;
 var firstCharBin;
 var first = true;
+var textMag = 0;
+var binNumMag = 0;
 
 function setup() {
  
@@ -47,9 +49,9 @@ function draw() {
   noStroke();
   // fill(113, 246, 79);
   textAlign(CENTER);
-  textSize(50);
 
   // greeting text 
+  textSize(50);
   push();
   translate(width/2, greeting_posY);
   text(greet, 0, 0);
@@ -59,16 +61,20 @@ function draw() {
     var name = input.value();
     input.remove();
 
+    // textSize(50 + textMag);
+    textSize(50 + binNumMag);
     push();
     translate(width/2, greeting_posY + 300);
     text(name, 0, 0);
     pop();
 
-    greeting_posY -= textVelY;
+    greeting_posY -= textVelY/2;
+    if (textMag < 50) textMag += 5;
 
     // phase of animation
-    if (greeting_posY < -150) {
-      textVelY = 0;
+    if (greeting_posY < -150 && numbersPrinted == false) {
+      greet = "";
+      textVelY = 0; // velocity Y is zero = will not move anymore
 
       // trigger recursive function
       if (!binPrinting) {
@@ -76,12 +82,24 @@ function draw() {
         printBins();
       }
 
+    } else if (numbersPrinted) {
+      if (greeting_posY < 150) {
+        // textVelY = -10;
+        // textMag += 10;
+      } else {
+        textVelY = 0;
+      }
+
     }
+
   }
 
   if (binPrinting) {
     for (var i = 0; i < cnt; i++) {
       var posX = (width - (fontWidth * binNum)) / 2; // console.log(posX);
+
+      // textSize(50 + binNumMag);
+      textSize(50);
       text(binName[i], posX + i * fontWidth, 600);
 
       // bin number pointing line
@@ -94,6 +112,7 @@ function draw() {
     for (var i = 0; i < cnt; i++) {
       // console.log(binName[i]);
       if (binName[i] == '0'){
+        binNumMag = 0;
         // rect
         noStroke();
         fill(0);
@@ -110,6 +129,7 @@ function draw() {
         // noStroke();
         ellipse(posX + i * fontWidth, 730, 20, 20);
       } else if (binName[i] == '1'){
+        binNumMag = 200;
 
         // rect
         noStroke();
@@ -130,6 +150,12 @@ function draw() {
       } else if (binName[i] == ' ') {
         // console.log("except: " + binName[i]);
       }
+    }
+
+    if (numbersPrinted) {
+      binNumMag = 0;
+
+
     }
 
     // draw barcode
@@ -167,6 +193,8 @@ function draw() {
 
 function reset() {
 
+  greet = "넥슨컴퓨터박물관에 오신 것을 환영합니다.\n\n이름을 입력하세요."
+
   // recreate Text Input 
   // console.log(select('.text-field'));
   if (select('.text-field') == null) {
@@ -180,6 +208,7 @@ function reset() {
   numbersPrinted = false;
   greeting_posY = 200;
   textVelY = 20;
+  textMag = 0;
 
 }
 
