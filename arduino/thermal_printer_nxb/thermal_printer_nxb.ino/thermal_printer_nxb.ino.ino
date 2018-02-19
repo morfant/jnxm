@@ -35,7 +35,10 @@ Adafruit_Thermal printer(&mySerial);     // Pass addr to printer constructor
 
 const int ledPin = 13; // the pin that the LED is attached to
 int incomingByte; // a variable to read incoming serial data into
-char msg_date[10];
+char msg_date[11];
+char msg_binName[17];
+
+char buf[27]; // 10 + 16 (date, firstCharBin)
 int cnt = 0;
 boolean newFeed = false;
 
@@ -144,33 +147,34 @@ void setup() {
 void loop() {
   int serialLen = Serial.available();
 
-  Serial.println(' '); // this line makes date is printed in a line. Why?
+  Serial.println(' '); // this line makes date is printed in a line. This makes TX led on arduino on. Why?
 
   if (Serial) {
     if (Serial.available() > 0) {
-
+      //        Serial.println(serialLen);
+      int dataLength = Serial.readBytes(buf, 27);
       newFeed = true;
 
-      incomingByte = Serial.read();
-      char r = (char)incomingByte;
-      msg_date[cnt] = r;
-      cnt++;
-
-      digitalWrite(ledPin, HIGH);
-
-
-
     } else {
-      digitalWrite(ledPin, HIGH);
       if (newFeed == true) {
-        String date = (String)msg_date;
 
+        strncpy(msg_date, buf, 10);
+        msg_date[strlen(msg_date)] = '\0';
+        strncpy(msg_binName, buf + 10, 16);
+        msg_binName[strlen(msg_binName)] = '\0';
 
+        printer.justify('C');
         printer.setSize('M');        // Set type size, accepts 'S', 'M', 'L'
-        printer.println(F("NEXON COMPUTER MUSEUM"));
-        printer.println(date);
-
-
+        //        //        printer.println(F("NEXON COMPUTER MUSEUM"));
+        printer.println(msg_date);
+        //        printer.println(msg_binName);
+        
+        // barcode
+        printer.justify('L');
+        printer.setSize('S');
+        printer.setBarcodeHeight(40);
+        // printer.printBarcode("1100011101110100", CODE128); // can print 16 digits
+        printer.printBarcode(msg_binName, CODE128); // can print 16 digits
 
 
         printer.wake();       // MUST wake() before printing again, even if reset
@@ -178,8 +182,11 @@ void loop() {
         //      printer.feed(2);
 
         newFeed = false;
-        cnt = 0;
-        memset(msg_date, ' ', sizeof(msg_date));
+        //        cnt = 0;
+        //        memset(msg_date, ' ', sizeof(msg_date));
+        //        memset(msg_binName, ' ', sizeof(msg_binName));
+        memset(buf, '0', sizeof(buf));
+        Serial.flush();
 
       }
 

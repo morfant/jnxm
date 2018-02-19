@@ -1,6 +1,6 @@
 var serial;
 var portName = "/dev/cu.usbmodem1461";
-var msg_date;
+var msg_date, msg_all;
 
 
 var playing = false;
@@ -31,7 +31,11 @@ var binNumMag = 0;
 function setup() {
  
   var d = new Date();
-  msg_date = d.getFullYear() + "/" + (d.getMonth()+1) + "/" + d.getDate();
+
+  msg_date = d.getFullYear() + '/'
+            + ('0' + (d.getMonth()+1)).slice(-2) + '/'
+            + ('0' + d.getDate()).slice(-2);
+  // msg_date = d.getFullYear() + "/" + (d.getMonth()+1) + "/" + d.getDate();
   console.log(msg_date);
 
   frameRate(30); // Attempt to refresh at starting FPS
@@ -284,6 +288,12 @@ function keyTyped() {
 
 
     binName = text2Binary(str);
+    // msg_all = msg_date + "*" + firstCharBin;
+    msg_all = msg_date + firstCharBin;
+    console.log(binName);
+    console.log(msg_all);
+
+
     console.log("binName: " + binName);
     console.log("firstCharBin: " + firstCharBin);
     // console.log(binName[binNum-1]);
@@ -291,7 +301,9 @@ function keyTyped() {
   } else if (keyCode === 32) {
     console.log("sp");
     console.log(msg_date);
-    serial.write(msg_date);
+    console.log(msg_all);
+    // serial.write(msg_date);
+    serial.write(msg_all);
 
   } else if (keyCode === BACKSPACE) {
     console.log("reset()");
