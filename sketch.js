@@ -1,3 +1,8 @@
+var serial;
+var portName = "/dev/cu.usbmodem1461";
+var outMsg;
+
+
 var playing = false;
 var input, button, greeting;
 var charLength = 0;
@@ -22,11 +27,22 @@ var first = true;
 var textMag = 0;
 var binNumMag = 0;
 
+
 function setup() {
  
+  outMsg = Date();
+  console.log(outMsg);
+
   frameRate(30); // Attempt to refresh at starting FPS
   var cnv = createCanvas(windowWidth, windowHeight);
   cnv.style('display', 'block');
+
+
+  serial = new p5.SerialPort();
+  console.log(serial.list());
+  serial.open(portName);
+
+
 
   // Text Input 
   input = createInput();
@@ -273,6 +289,9 @@ function keyTyped() {
 
   } else if (keyCode === 32) {
     console.log("sp");
+    console.log(outMsg);
+    serial.write(outMsg);
+
   } else if (keyCode === BACKSPACE) {
     console.log("reset()");
     reset();
