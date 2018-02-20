@@ -1,7 +1,11 @@
 var serial;
 var portName = "/dev/cu.usbmodem1461";
 var msg_date, msg_all;
+var inByte = null;
 
+var printOnPaper = false;
+
+var sessionEnd = false;
 
 var playing = false;
 var input, button, greeting;
@@ -14,6 +18,8 @@ var binPrintInterval = 100; //ms
 var binText;
 var inputPosX = 450;
 var inputPosY = 500;
+var announcePrinting = "출력중입니다…";
+var announceSessionEnd = "감사합니다";
 var greet = "넥슨컴퓨터박물관에 오신 것을 환영합니다.\n\n이름을 입력하세요."
 var greeting_posY = 200;
 var enterInput = false;
@@ -47,6 +53,7 @@ function setup() {
   console.log(serial.list());
   serial.open(portName);
 
+  serial.on('data', serialEvent); // callback for when new data arrives
 
 
   // Text Input 
@@ -175,7 +182,17 @@ function draw() {
 
     if (numbersPrinted) {
       binNumMag = 0;
+      if (!printOnPaper) {
+        serial.write(msg_all); // make printer work!
+        printOnPaper = true;
+      }
 
+      if (!sessionEnd) {
+        text(announcePrinting, width/2, 800);
+      } else {
+        text(announceSessionEnd, width/2, 800);
+        setTimeout(reset, 3000);
+      }
 
     }
 
@@ -214,6 +231,8 @@ function draw() {
 
 function reset() {
 
+  printOnPaper = false;
+  sessionEnd = false;
   greet = "넥슨컴퓨터박물관에 오신 것을 환영합니다.\n\n이름을 입력하세요."
 
   // recreate Text Input 
@@ -304,7 +323,7 @@ function keyTyped() {
     console.log(msg_date);
     console.log(msg_all);
     // serial.write(msg_date);
-    serial.write(msg_all);
+    serial.write(msg_all); // make printer work!
 
   } else if (keyCode === BACKSPACE) {
     console.log("reset()");
@@ -330,6 +349,19 @@ function text2Binary(string) {
     }
       return char.charCodeAt(0).toString(2);
   }).join(' ');
+}
+
+// serial
+function serialEvent() {
+  // read a byte from the serial port:
+  inByte = serial.read();
+
+  if (inByte != 10 && inByte != 32 && inByte != 13 && inByte != 0 && inByte != 224) {
+    if (inByte == 101) { // 'e' from Arduino
+      // console.log("read byte: " + inByte);
+      sessionEnd = true;
+    }
+  }
 }
 
 // full screen

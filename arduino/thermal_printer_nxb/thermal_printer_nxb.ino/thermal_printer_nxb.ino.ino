@@ -156,7 +156,7 @@ void loop() {
 
       memset(buf, '0', sizeof(buf));
       dataLength = Serial.readBytes(buf, 26);
-      Serial.println(dataLength);
+//      Serial.println(dataLength);
 
       newFeed = true;
 
@@ -188,6 +188,8 @@ void loop() {
         printer.feed(2);
 
 
+        Serial.flush();
+        Serial.write("e");
         printer.wake();       // MUST wake() before printing again, even if reset
 
         //      printer.feed(2);
