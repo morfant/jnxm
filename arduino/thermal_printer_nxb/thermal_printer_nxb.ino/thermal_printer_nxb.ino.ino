@@ -12,8 +12,9 @@
   ------------------------------------------------------------------------*/
 
 #include "Adafruit_Thermal.h"
-#include "adalogo.h"
-#include "adaqrcode.h"
+//#include "adalogo.h"
+//#include "adaqrcode.h"
+#include "nxc_qr_code.h"
 
 // Here's the new syntax when using SoftwareSerial (e.g. Arduino Uno) ----
 // If using hardware serial instead, comment out or remove these lines:
@@ -37,9 +38,10 @@ const int ledPin = 13; // the pin that the LED is attached to
 int incomingByte; // a variable to read incoming serial data into
 char msg_date[11];
 char msg_binName[17];
-char buf[27]; // 10 + 16 (date, firstCharBin)
+char buf[26]; // 10 + 16 (date, firstCharBin)
 
 boolean newFeed = false;
+int dataLength = 0;
 
 void setup() {
 
@@ -150,12 +152,16 @@ void loop() {
 
   if (Serial) {
     if (Serial.available() > 0) {
-      //        Serial.println(serialLen);
-      int dataLength = Serial.readBytes(buf, 27);
+      //      Serial.println(serialLen);
+
+      memset(buf, '0', sizeof(buf));
+      dataLength = Serial.readBytes(buf, 26);
+      Serial.println(dataLength);
+
       newFeed = true;
 
     } else {
-      if (newFeed == true) {
+      if (newFeed == true && dataLength == 26) {
 
         strncpy(msg_date, buf, 10); // 2018/02/19 : date
         msg_date[strlen(msg_date)] = '\0';
@@ -165,26 +171,31 @@ void loop() {
         printer.justify('C');
         printer.setSize('M');
         printer.println(F("NEXON COMPUTER MUSEUM"));
+        //        printer.println(dataLength);
         printer.println(msg_date);
         //        printer.println(msg_binName);
-        
-        // barcode
-        printer.justify('L');
+
+
+        // QR code
+        printer.justify('C');
         printer.setSize('S');
-        printer.setBarcodeHeight(40);
-        // printer.printBarcode("1100011101110100", CODE128); // can print 16 digits
+        printer.printBitmap(nxc_qr_code_width, nxc_qr_code_height, nxc_qr_code_data);
+
+        // barcode
+        printer.setBarcodeHeight(60);
         printer.printBarcode(msg_binName, CODE128); // can print 16 digits
+
+        printer.feed(2);
 
 
         printer.wake();       // MUST wake() before printing again, even if reset
 
         //      printer.feed(2);
 
+        dataLength = 0;
         newFeed = false;
         //        cnt = 0;
-        //        memset(msg_date, ' ', sizeof(msg_date));
-        //        memset(msg_binName, ' ', sizeof(msg_binName));
-        memset(buf, '0', sizeof(buf));
+        //        memset(buf, '0', sizeof(buf));
         Serial.flush();
 
       }
