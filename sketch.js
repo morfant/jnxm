@@ -60,6 +60,7 @@ function setup() {
   input = createInput();
   input.attribute('maxlength', '4');
   input.class("text-field"); // see data/style.css
+  input.elt.focus();
 
   // Binary result text
   // binText = createElement('h2');
@@ -89,8 +90,10 @@ function draw() {
     var name = input.value();
     input.remove();
 
+    // name
     // textSize(50 + textMag);
-    textSize(50 + binNumMag);
+    // textSize(50 + binNumMag);
+    textSize(50);
     push();
     translate(width/2, greeting_posY + 300);
     text(name, 0, 0);
@@ -131,7 +134,8 @@ function draw() {
       text(binName[i], posX + i * fontWidth, 600);
 
       // bin number pointing line
-      stroke(113, 246, 79, 100);
+      // stroke(113, 246, 79, 100); // green
+      stroke(255, 100);
       if (!numbersPrinted) {
         if (i == cnt - 1) line(charXPoses[charIdx], 150, posX + i * fontWidth, 550)
       }
@@ -188,37 +192,15 @@ function draw() {
       }
 
       if (!sessionEnd) {
+        fill(255, 200);
         text(announcePrinting, width/2, 800);
       } else {
+        fill(255, 200);
         text(announceSessionEnd, width/2, 800);
         setTimeout(reset, 3000);
       }
 
     }
-
-    // draw barcode
-    /*
-    if (numbersPrinted) {
-      console.log("draw barcode");
-      var img = createElement('img');
-      img.id("barcode");
-      var posX = (width - (30 * binNum)) / 2;
-      img.position(posX, 760);
-      // img.position(0, 760);
-
-      JsBarcode("#barcode", binName, {
-        format: "CODE128",
-        background: "#595959",
-        lineColor: "white",
-        width:3,
-        height:50,
-        displayValue: false,
-        fontSize: 36
-      });
-
-      numbersPrinted = false;
-    }
-    */
 
   }
 
@@ -241,6 +223,7 @@ function reset() {
     input = createInput();
     input.attribute('maxlength', '4');
     input.class("text-field"); // see data/style.css
+    input.elt.focus();
   }
 
   enterInput = false;
@@ -305,8 +288,6 @@ function keyTyped() {
       charXPoses[3] = width/2 + (fontWidth * 2);
     }
 
-
-
     binName = text2Binary(str);
     // msg_all = msg_date + "*" + firstCharBin;
     msg_all = msg_date + firstCharBin;
@@ -325,12 +306,12 @@ function keyTyped() {
     // serial.write(msg_date);
     serial.write(msg_all); // make printer work!
 
-  } else if (keyCode === BACKSPACE) {
-    console.log("reset()");
-    reset();
+    return false; // Prevent the key working as default function
+
   } else {
     // console.log(keyCode);
   }
+
 
 }
 
@@ -364,11 +345,19 @@ function serialEvent() {
   }
 }
 
-// full screen
+// keyPressed
 function keyPressed() {
-  if (key === 'f' || key === 'F') {
+  if (keyCode === 33) { // 'page up' key
     var fs = fullscreen();
     fullscreen(!fs);
+    return false;
+  } else if (keyCode === DELETE) {
+    console.log("reset()");
+    reset();
+    return false;
+  } else if (keyCode === ESCAPE) {
+    console.log("esc");
+    return false;
   }
 }
 
