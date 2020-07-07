@@ -1,5 +1,5 @@
 var serial;
-var portName = "/dev/cu.usbmodem1461";
+var portName = "/dev/cu.usbmodem14601";
 var msg_date, msg_all;
 var inByte = null;
 
@@ -35,25 +35,41 @@ var binNumMag = 0;
 
 
 function setup() {
- 
+
+  print("hello!! smile!!")
+
+  serial = new p5.SerialPort();
+
+  // Let's list the ports available
+  portlist = serial.list();
+  console.log(portlist)
+
+  // When we get a list of serial ports that are available
+  serial.on('list', gotList);
+
+  // When our serial port is opened and ready for read/write
+  serial.on('open', gotOpen);
+
+  // console.log(serial.list());
+  // serial.open(portName);
+  // console.log(serial.isConnected());
+
+  serial.on('data', serialEvent); // callback for when new data arrives
+
+
+
   var d = new Date();
 
   msg_date = d.getFullYear() + '/'
-            + ('0' + (d.getMonth()+1)).slice(-2) + '/'
-            + ('0' + d.getDate()).slice(-2);
+    + ('0' + (d.getMonth() + 1)).slice(-2) + '/'
+    + ('0' + d.getDate()).slice(-2);
   // msg_date = d.getFullYear() + "/" + (d.getMonth()+1) + "/" + d.getDate();
   console.log(msg_date);
+  console.log(portName)
 
   frameRate(30); // Attempt to refresh at starting FPS
   var cnv = createCanvas(windowWidth, windowHeight);
   cnv.style('display', 'block');
-
-
-  serial = new p5.SerialPort();
-  console.log(serial.list());
-  serial.open(portName);
-
-  serial.on('data', serialEvent); // callback for when new data arrives
 
 
   // Text Input 
@@ -69,6 +85,24 @@ function setup() {
 
 }
 
+// Got the list of ports
+function gotList(thelist) {
+  print(thelist)
+  // theList is an array of their names
+  for (let i = 0; i < thelist.length; i++) {
+    // Display in the console
+    print(i + " " + thelist[i]);
+  }
+  serial.open(thelist[1]);
+}
+
+// Connected to our serial device
+function gotOpen() {
+  print("Serial Port is open: " + serial.serialport)
+}
+
+
+
 function draw() {
   background(89, 89, 89);
   // background(21, 21, 21);
@@ -82,7 +116,7 @@ function draw() {
   // greeting text 
   textSize(50);
   push();
-  translate(width/2, greeting_posY);
+  translate(width / 2, greeting_posY);
   text(greet, 0, 0);
   pop();
 
@@ -95,11 +129,11 @@ function draw() {
     // textSize(50 + binNumMag);
     textSize(50);
     push();
-    translate(width/2, greeting_posY + 300);
+    translate(width / 2, greeting_posY + 300);
     text(name, 0, 0);
     pop();
 
-    greeting_posY -= textVelY/2;
+    greeting_posY -= textVelY / 2;
     if (textMag < 50) textMag += 5;
 
     // phase of animation
@@ -143,36 +177,36 @@ function draw() {
 
     for (var i = 0; i < cnt; i++) {
       // console.log(binName[i]);
-      if (binName[i] == '0'){
+      if (binName[i] == '0') {
         binNumMag = 0;
         // rect
         noStroke();
         fill(0);
-        rect(posX + (i-0.5) * (fontWidth), 620, 30, 30);
+        rect(posX + (i - 0.5) * (fontWidth), 620, 30, 30);
 
         // pulse
         stroke(255, 200);
-        line(posX + (i-0.5) * (fontWidth), 700, posX + (i+0.5) * (fontWidth), 700);
-        if (binName[i-1] == '1') {
-          line(posX + (i-0.5) * (fontWidth), 700, posX + (i-0.5) * (fontWidth), 670);
+        line(posX + (i - 0.5) * (fontWidth), 700, posX + (i + 0.5) * (fontWidth), 700);
+        if (binName[i - 1] == '1') {
+          line(posX + (i - 0.5) * (fontWidth), 700, posX + (i - 0.5) * (fontWidth), 670);
         }
 
         // punch hole
         // noStroke();
         ellipse(posX + i * fontWidth, 730, 20, 20);
-      } else if (binName[i] == '1'){
+      } else if (binName[i] == '1') {
         binNumMag = 200;
 
         // rect
         noStroke();
         fill(255);
-        rect(posX + (i-0.5) * (fontWidth), 620, 30, 30);
+        rect(posX + (i - 0.5) * (fontWidth), 620, 30, 30);
 
         // pulse
         stroke(255, 200);
-        line(posX + (i-0.5) * (fontWidth), 670, posX + (i+0.5) * (fontWidth), 670);
-        if (binName[i-1] == '0') {
-          line(posX + (i-0.5) * (fontWidth), 670, posX + (i-0.5) * (fontWidth), 700);
+        line(posX + (i - 0.5) * (fontWidth), 670, posX + (i + 0.5) * (fontWidth), 670);
+        if (binName[i - 1] == '0') {
+          line(posX + (i - 0.5) * (fontWidth), 670, posX + (i - 0.5) * (fontWidth), 700);
         }
 
         // punch hole
@@ -193,10 +227,10 @@ function draw() {
 
       if (!sessionEnd) {
         fill(255, 200);
-        text(announcePrinting, width/2, 800);
+        text(announcePrinting, width / 2, 800);
       } else {
         fill(255, 200);
-        text(announceSessionEnd, width/2, 800);
+        text(announceSessionEnd, width / 2, 800);
         setTimeout(reset, 3000);
       }
 
@@ -273,19 +307,19 @@ function keyTyped() {
     charXPoses = [];
     // charXPoses
     if (charLength == 1) {
-      charXPoses[0] = width/2;
+      charXPoses[0] = width / 2;
     } else if (charLength == 2) {
-      charXPoses[0] = width/2 - (fontWidth);
-      charXPoses[1] = width/2 + (fontWidth);
+      charXPoses[0] = width / 2 - (fontWidth);
+      charXPoses[1] = width / 2 + (fontWidth);
     } else if (charLength == 3) {
-      charXPoses[0] = width/2 - (fontWidth + fontWidth/2);
-      charXPoses[1] = width/2;
-      charXPoses[2] = width/2 + (fontWidth + fontWidth/2);
+      charXPoses[0] = width / 2 - (fontWidth + fontWidth / 2);
+      charXPoses[1] = width / 2;
+      charXPoses[2] = width / 2 + (fontWidth + fontWidth / 2);
     } else if (charLength == 4) {
-      charXPoses[0] = width/2 - (fontWidth * 2);
-      charXPoses[1] = width/2 - (fontWidth * 1);
-      charXPoses[2] = width/2 + (fontWidth * 1);
-      charXPoses[3] = width/2 + (fontWidth * 2);
+      charXPoses[0] = width / 2 - (fontWidth * 2);
+      charXPoses[1] = width / 2 - (fontWidth * 1);
+      charXPoses[2] = width / 2 + (fontWidth * 1);
+      charXPoses[3] = width / 2 + (fontWidth * 2);
     }
 
     binName = text2Binary(str);
@@ -324,11 +358,11 @@ function analyzeText(string) {
 
 function text2Binary(string) {
   return string.split('').map(function (char) {
-    if (first){
+    if (first) {
       firstCharBin = char.charCodeAt(0).toString(2);
       first = false;
     }
-      return char.charCodeAt(0).toString(2);
+    return char.charCodeAt(0).toString(2);
   }).join(' ');
 }
 
